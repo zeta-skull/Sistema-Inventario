@@ -6,6 +6,7 @@ python-dotenv==1.0.0
 # Base de datos y ORM
 Flask-SQLAlchemy==3.0.5
 SQLAlchemy==2.0.20
+Flask-Migrate==4.0.4
 alembic==1.12.0
 
 # Autenticación y seguridad
@@ -24,7 +25,6 @@ Flask-Mail==0.9.1
 # Generación de reportes
 fpdf2==2.7.5
 pandas==2.1.0
-numpy>=1.23.0
 openpyxl==3.1.2
 XlsxWriter==3.1.2
 
