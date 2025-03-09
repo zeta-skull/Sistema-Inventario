@@ -1,0 +1,25 @@
+¡Bienvenido al sistema de gestión de inventario CODEP!
+
+Estimado {{ user.username }},
+
+¡Bienvenido al sistema de gestión de inventario! Su cuenta ha sido creada con éxito con el rol de: {{ user.role.name }}.
+
+Esto es lo que puede hacer con su cuenta:
+{% for permission, enabled in user.role.permissions.items() %}
+{% if enabled %}
+- {{ permission.replace('_', ' ').title() }}
+{% endif %}
+{% endfor %}
+
+Puedes comenzar visitando:
+{{ url_for('auth.login', _external=True) }}
+
+Por razones de seguridad, recomendamos cambiar su contraseña después de su primer inicio de sesión.
+
+Si tiene alguna pregunta o necesita ayuda, no dude en comunicarse con su administrador.
+
+Atentamente
+Sistema inventario CODEP
+
+---
+Sistema de gestión de inventario - CODEP

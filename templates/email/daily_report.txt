@@ -1,0 +1,39 @@
+DAILY INVENTORY REPORT
+=====================
+Fecha de informe: {{ data.date }}
+
+RESUMEN
+-------
+Total Productos: {{ data.summary.total_products }}
+Artículos bajos de stock: {{ data.summary.low_stock_count }}
+Transacciones de hoy: {{ data.summary.daily_transactions }}
+
+{% if data.low_stock_items %}
+Artículos bajos de stock
+--------------
+{% for item in data.low_stock_items %}
+* {{ item.name }}
+  Stock actual: {{ item.current_stock }}
+  Stock mínimo: {{ item.minimum_stock }}
+{% endfor %}
+{% endif %}
+
+{% if data.transactions %}
+Transacciones de hoy
+------------------
+{% for trans in data.transactions %}
+* {{ trans.product_name }}
+  Tipo: {{ trans.type|upper }}
+  Cantidad: {{ trans.quantity }}
+  Total: ${{ "%.2f"|format(trans.total_price) }}
+{% endfor %}
+{% endif %}
+
+Vea el tablero completo en:
+{{ url_for('inventory.dashboard', _external=True) }}
+
+Atentamente
+Sistema inventario CODEP
+
+---
+Este es un informe automatizado. No responda a este correo electrónico.

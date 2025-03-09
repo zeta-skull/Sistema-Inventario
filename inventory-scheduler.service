@@ -1,0 +1,18 @@
+[Unit]
+Description=Programador del Sistema de Gestión de Inventario CODEP
+After=network.target
+
+[Service]
+Type=simple
+User=www-data
+Group=www-data
+WorkingDirectory=/opt/sistema-inventario
+Environment=PYTHONPATH=/opt/sistema-inventario
+Environment=FLASK_APP=app.py
+Environment=FLASK_ENV=production
+ExecStart=/opt/sistema-inventario/venv/bin/python scheduler.py
+Restart=always
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target

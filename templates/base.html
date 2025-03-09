@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}{% endblock %} - Sistema de Inventario CODEP</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+    </style>
+
+    {% block extra_css %}{% endblock %}
+</head>
+<body class="bg-gray-50">
+    {% if current_user.is_authenticated %}
+    <!-- Navegación -->
+    <nav class="bg-white shadow-lg">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="flex justify-between h-16">
+                <div class="flex">
+                    <!-- Logo -->
+                    <div class="flex-shrink-0 flex items-center">
+                        <img class="h-8 w-auto" src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo">
+                    </div>
+
+                    <!-- Enlaces de navegación -->
+                    <div class="hidden md:ml-6 md:flex md:space-x-8">
+                        <a href="{{ url_for('inventory.dashboard') }}" 
+                           class="inline-flex items-center px-1 pt-1 border-b-2 {% if request.endpoint == 'inventory.dashboard' %}border-indigo-500 text-gray-900{% else %}border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700{% endif %}">
+                            Dashboard
+                        </a>
+                        <a href="{{ url_for('inventory.products') }}"
+                           class="inline-flex items-center px-1 pt-1 border-b-2 {% if request.endpoint == 'inventory.products' %}border-indigo-500 text-gray-900{% else %}border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700{% endif %}">
+                            Productos
+                        </a>
+                        <a href="{{ url_for('inventory.categories') }}"
+                           class="inline-flex items-center px-1 pt-1 border-b-2 {% if request.endpoint == 'inventory.categories' %}border-indigo-500 text-gray-900{% else %}border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700{% endif %}">
+                            Categorías
+                        </a>
+                        <a href="{{ url_for('inventory.suppliers') }}"
+                           class="inline-flex items-center px-1 pt-1 border-b-2 {% if request.endpoint == 'inventory.suppliers' %}border-indigo-500 text-gray-900{% else %}border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700{% endif %}">
+                            Proveedor
+                        </a>
+                        <a href="{{ url_for('inventory.transactions') }}"
+                           class="inline-flex items-center px-1 pt-1 border-b-2 {% if request.endpoint == 'inventory.transactions' %}border-indigo-500 text-gray-900{% else %}border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700{% endif %}">
+                            Transacciones
+                        </a>
+                        {% if current_user.role.name == 'Administrator' %}
+                        <a href="{{ url_for('admin.admin_dashboard') }}"
+                           class="inline-flex items-center px-1 pt-1 border-b-2 {% if request.endpoint.startswith('admin.') %}border-indigo-500 text-gray-900{% else %}border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700{% endif %}">
+                            Admin
+                        </a>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Menú del lado derecho -->
+                <div class="hidden md:ml-6 md:flex md:items-center">
+                    <div class="ml-3 relative">
+                        <div class="relative" x-data="{ open: false }" @click.away="open = false">
+                            <button @click="open = !open" class="flex items-center max-w-xs bg-white rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                                <img class="h-8 w-8 rounded-full" src="https://ui-avatars.com/api/?name={{ current_user.username }}" alt="">
+                                <span class="ml-3 text-gray-700">{{ current_user.username }}</span>
+                            </button>
+                            <div x-show="open" class="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5">
+                                <a href="{{ url_for('auth.profile') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Perfil</a>
+                                <a href="{{ url_for('auth.change_password') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Cambiar la contraseña</a>
+                                <a href="{{ url_for('auth.logout') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Cierre de sesión</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+    {% endif %}
+
+    <!-- Mensajes flash -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-4">
+                {% for category, message in messages %}
+                    <div class="rounded-md p-4 mb-4 {% if category == 'success' %}bg-green-50 text-green-700{% elif category == 'danger' %}bg-red-50 text-red-700{% else %}bg-blue-50 text-blue-700{% endif %}">
+                        <div class="flex">
+                            <div class="flex-shrink-0">
+                                {% if category == 'success' %}
+                                    <i class="fas fa-check-circle"></i>
+                                {% elif category == 'danger' %}
+                                    <i class="fas fa-exclamation-circle"></i>
+                                {% else %}
+                                    <i class="fas fa-info-circle"></i>
+                                {% endif %}
+                            </div>
+                            <div class="ml-3">
+                                <p class="text-sm">{{ message }}</p>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+
+    <!-- Contenido principal -->
+    <main class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Alpine.js para la funcionalidad desplegable -->
+    <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

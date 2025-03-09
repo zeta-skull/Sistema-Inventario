@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>Informe de inventario diario</title>
+    <style>
+        @media only screen and (max-width: 620px) {
+            table.body h1 {
+                font-size: 28px !important;
+                margin-bottom: 10px !important;
+            }
+            table.body p,
+            table.body ul,
+            table.body ol,
+            table.body td,
+            table.body span,
+            table.body a {
+                font-size: 16px !important;
+            }
+            table.body .wrapper,
+            table.body .article {
+                padding: 10px !important;
+            }
+            table.body .content {
+                padding: 0 !important;
+            }
+            table.body .container {
+                padding: 0 !important;
+                width: 100% !important;
+            }
+            table.body .main {
+                border-left-width: 0 !important;
+                border-radius: 0 !important;
+                border-right-width: 0 !important;
+            }
+            table.body .btn table {
+                width: 100% !important;
+            }
+            table.body .btn a {
+                width: 100% !important;
+            }
+        }
+    </style>
+</head>
+<body style="background-color: #f6f6f6; font-family: sans-serif; -webkit-font-smoothing: antialiased; font-size: 14px; line-height: 1.4; margin: 0; padding: 0; -ms-text-size-adjust: 100%; -webkit-text-size-adjust: 100%;">
+    <table role="presentation" border="0" cellpadding="0" cellspacing="0" class="body" style="border-collapse: separate; width: 100%; background-color: #f6f6f6;">
+        <tr>
+<td style="font-family: sans-serif; font-size: 14px;">&nbsp;</td>
+<td class="container" style="font-family: sans-serif; font-size: 14px; display: block; max-width: 580px; padding: 10px; width: 580px; margin: 0 auto;">
+
+                <div class="content" style="box-sizing: border-box; display: block; margin: 0 auto; max-width: 580px; padding: 10px;">
+                    <!-- Iniciar contenedor blanco centrado -->
+                    <table role="presentation" class="main" style="border-collapse: separate; width: 100%; background: #ffffff; border-radius: 3px;">
+                        <!-- Iniciar el área de contenido principal -->
+                        <tr>
+                            <td class="wrapper" style="font-family: sans-serif; font-size: 14px; box-sizing: border-box; padding: 20px;">
+                                <table role="presentation" border="0" cellpadding="0" cellspacing="0" style="border-collapse: separate; width: 100%;">
+                                    <tr>
+                                        <td style="font-family: sans-serif; font-size: 14px; vertical-align: top;">
+                                            <h1 style="color: #000000; font-family: sans-serif; font-weight: 300; line-height: 1.4; margin: 0; margin-bottom: 30px; font-size: 35px; text-align: center;">Informe de inventario diario</h1>
+                                            <p style="font-family: sans-serif; font-size: 14px; font-weight: normal; margin: 0; margin-bottom: 15px;">Fecha de informe: {{ data.date }}</p>
+
+                                            <!-- Sección de resumen -->
+                                            <div style="background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; padding: 15px; margin-bottom: 20px;">
+                                                <h2 style="color: #1e293b; font-size: 18px; margin: 0 0 15px 0;">Resumen</h2>
+                                                <table role="presentation" style="width: 100%;">
+                                                    <tr>
+                                                        <td style="padding: 5px 0;"><strong>Productos totales:</strong></td>
+                                                        <td style="text-align: right;">{{ data.summary.total_products }}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td style="padding: 5px 0;"><strong>Artículos bajos de stock:</strong></td>
+                                                        <td style="text-align: right; color: #ef4444;">{{ data.summary.low_stock_count }}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td style="padding: 5px 0;"><strong>Transacciones de hoy:</strong></td>
+                                                        <td style="text-align: right;">{{ data.summary.daily_transactions }}</td>
+                                                    </tr>
+                                                </table>
+                                            </div>
+
+                                            <!-- Artículos bajos de stock -->
+                                            {% if data.low_stock_items %}
+                                            <h2 style="color: #1e293b; font-size: 18px; margin: 20px 0 15px 0;">Artículos bajos de stock</h2>
+                                            <table role="presentation" style="width: 100%; border-collapse: collapse; margin-bottom: 20px;">
+                                                <thead>
+                                                    <tr style="background-color: #f8fafc;">
+                                                        <th style="text-align: left; padding: 8px; border: 1px solid #e2e8f0;">Productos</th>
+                                                        <th style="text-align: right; padding: 8px; border: 1px solid #e2e8f0;">Stock actual</th>
+                                                        <th style="text-align: right; padding: 8px; border: 1px solid #e2e8f0;">Stock Minimo</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {% for item in data.low_stock_items %}
+                                                    <tr>
+                                                        <td style="padding: 8px; border: 1px solid #e2e8f0;">{{ item.name }}</td>
+                                                        <td style="text-align: right; padding: 8px; border: 1px solid #e2e8f0; color: #ef4444;">{{ item.current_stock }}</td>
+                                                        <td style="text-align: right; padding: 8px; border: 1px solid #e2e8f0;">{{ item.minimum_stock }}</td>
+                                                    </tr>
+                                                    {% endfor %}
+                                                </tbody>
+                                            </table>
+                                            {% endif %}
+
+                                            <!-- Transacciones de hoy -->
+                                            {% if data.transactions %}
+                                            <h2 style="color: #1e293b; font-size: 18px; margin: 20px 0 15px 0;">Transacciones de hoy</h2>
+                                            <table role="presentation" style="width: 100%; border-collapse: collapse; margin-bottom: 20px;">
+                                                <thead>
+                                                    <tr style="background-color: #f8fafc;">
+                                                        <th style="text-align: left; padding: 8px; border: 1px solid #e2e8f0;">Productos</th>
+                                                        <th style="text-align: center; padding: 8px; border: 1px solid #e2e8f0;">Tipo</th>
+                                                        <th style="text-align: right; padding: 8px; border: 1px solid #e2e8f0;">Cantidad</th>
+                                                        <th style="text-align: right; padding: 8px; border: 1px solid #e2e8f0;">Total</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {% for trans in data.transactions %}
+                                                    <tr>
+                                                        <td style="padding: 8px; border: 1px solid #e2e8f0;">{{ trans.product_name }}</td>
+                                                        <td style="text-align: center; padding: 8px; border: 1px solid #e2e8f0;">
+                                                            {% if trans.type == 'in' %}
+                                                            <span style="color: #22c55e;">Entrada</span>
+                                                            {% else %}
+                                                            <span style="color: #ef4444;">Salida</span>
+                                                            {% endif %}
+                                                        </td>
+                                                        <td style="text-align: right; padding: 8px; border: 1px solid #e2e8f0;">{{ trans.quantity }}</td>
+                                                        <td style="text-align: right; padding: 8px; border: 1px solid #e2e8f0;">${{ "%.2f"|format(trans.total_price) }}</td>
+                                                    </tr>
+                                                    {% endfor %}
+                                                </tbody>
+                                            </table>
+                                            {% endif %}
+
+                                            <table role="presentation" border="0" cellpadding="0" cellspacing="0" class="btn btn-primary" style="border-collapse: separate; width: 100%; box-sizing: border-box;">
+                                                <tbody>
+                                                    <tr>
+                                                        <td align="center" style="font-family: sans-serif; font-size: 14px; vertical-align: top; padding-bottom: 15px;">
+                                                            <table role="presentation" border="0" cellpadding="0" cellspacing="0" style="border-collapse: separate; width: auto;">
+                                                                <tbody>
+                                                                    <tr>
+                                                                        <td style="font-family: sans-serif; font-size: 14px; vertical-align: top; border-radius: 5px; text-align: center; background-color: #4f46e5;">
+                                                                            <a href="{{ url_for('inventory.dashboard', _external=True) }}" target="_blank" style="border: solid 1px #4f46e5; border-radius: 5px; box-sizing: border-box; cursor: pointer; display: inline-block; font-size: 14px; font-weight: bold; margin: 0; padding: 12px 25px; text-decoration: none; text-transform: capitalize; background-color: #4f46e5; border-color: #4f46e5; color: #ffffff;">Vista Dashboard</a>
+                                                                        </td>
+                                                                    </tr>
+                                                                </tbody>
+                                                            </table>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                    </table>
+                    <!-- Pie de página de inicio -->
+                    <div class="footer" style="clear: both; margin-top: 10px; text-align: center; width: 100%;">
+                        <table role="presentation" border="0" cellpadding="0" cellspacing="0" style="border-collapse: separate; width: 100%;">
+                            <tr>
+                                <td class="content-block" style="font-family: sans-serif; vertical-align: top; padding-bottom: 10px; padding-top: 10px; color: #999999; font-size: 12px; text-align: center;">
+                                    <span class="apple-link" style="color: #999999; font-size: 12px; text-align: center;">Sistema de gestión de inventario</span>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </td>
+            <td style="font-family: sans-serif; font-size: 14px; vertical-align: top;">&nbsp;</td>
+        </tr>
+    </table>
+</body>
+</html>

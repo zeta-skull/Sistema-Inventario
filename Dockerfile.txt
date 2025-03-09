@@ -1,0 +1,43 @@
+# Usar imagen Python 3.9 slim
+FROM python:3.9-slim
+
+# Establecer variables de entorno
+ENV PYTHONDONTWRITEBYTECODE 1
+ENV PYTHONUNBUFFERED 1
+ENV FLASK_APP app.py
+ENV FLASK_ENV development
+
+# Establecer directorio de trabajo
+WORKDIR /app
+
+# Instalar dependencias del sistema
+RUN apt-get update && apt-get install -y \
+    sqlite3 \
+    curl \
+    && rm -rf /var/lib/apt/lists/*
+
+# Instalar dependencias Python
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Copiar archivos del proyecto
+COPY . .
+
+# Crear directorios necesarios
+RUN mkdir -p static/uploads static/product_images backups reports instance \
+    && chown -R nobody:nogroup /app \
+    && chmod -R 755 /app \
+    && chmod -R 770 /app/instance \
+    && chmod -R 770 /app/static/uploads \
+    && chmod -R 770 /app/static/product_images \
+    && chmod -R 770 /app/backups \
+    && chmod -R 770 /app/reports
+
+# Cambiar a usuario no root
+USER nobody
+
+# Exponer puerto
+EXPOSE 5000
+
+# Ejecutar la aplicación
+CMD ["gunicorn", "--bind", "0.0.0.0:5000", "--workers", "4", "--threads", "4", "app:app"]

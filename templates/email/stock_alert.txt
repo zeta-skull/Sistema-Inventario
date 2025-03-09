@@ -1,0 +1,20 @@
+Alerta de stock bajo
+
+El siguiente producto ha alcanzado su nivel mínimo de stock:
+
+Producto: {{ product.name }}
+SKU: {{ product.sku }}
+
+Stock actual: {{ product.current_stock }}
+Stock mínimo: {{ product.minimum_stock }}
+{% if product.supplier %}
+Proveedor:{{ product.supplier.name }}
+{% endif %}
+
+Por favor, tome las medidas necesarias para reabastecer este artículo.
+
+Puede ver los detalles del producto en:
+{{ url_for('inventory.products', _external=True) }}
+
+Atentamente
+Sistema inventario CODEP
