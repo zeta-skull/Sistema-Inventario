@@ -15,10 +15,10 @@ load_dotenv()
 app = Flask(__name__)
 
 # Configuración
-app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'tu-clave-secreta-aqui')
+app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'a8d4f7c2e9b3k6m5n8p2q7r4t9w1z0x3')
 app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL', 'sqlite:///inventario.db')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.config['JWT_SECRET_KEY'] = os.getenv('JWT_SECRET_KEY', 'jwt-clave-secreta')
+app.config['JWT_SECRET_KEY'] = os.getenv('JWT_SECRET_KEY', 'j9h2k5m8n4p7q3r6t9w2x5z8a1d4f7c0')
 app.config['JWT_ACCESS_TOKEN_EXPIRES'] = timedelta(hours=1)
 
 # Configuración de correo
@@ -47,6 +47,9 @@ from routes.admin import admin_bp
 app.register_blueprint(auth_bp)
 app.register_blueprint(inventory_bp)
 app.register_blueprint(admin_bp)
+
+# Importar comandos CLI
+import cli
 
 # Manejador de errores 404
 @app.errorhandler(404)
